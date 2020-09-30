@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button, Container, Aside, Header, Main, Menu, Submenu, MenuItem, MenuItemGroup, ColorPicker } from 'element-ui'
+import { Button, Container, Aside, Header, Main, Menu, Submenu, MenuItem, ColorPicker, Drawer } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Container)
@@ -9,5 +9,6 @@ Vue.use(Main)
 Vue.use(Menu)
 Vue.use(Submenu)
 Vue.use(MenuItem)
-Vue.use(MenuItemGroup)
+// Vue.use(MenuItemGroup)
 Vue.use(ColorPicker)
+Vue.use(Drawer)
