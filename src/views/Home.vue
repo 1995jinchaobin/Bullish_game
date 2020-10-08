@@ -3,13 +3,13 @@
     <el-container style="height: 100vh">
       <el-aside>
         <el-menu
-          default-active='/realname/list'
+          :default-active="'/'+urlActive"
           router
           unique-opened
           :background-color="bgcList[pifuIndex].bgc.lb"
           text-color="#C2C6CD"
           active-text-color="#fff">
-          <h3>牛气冲天</h3>
+          <div class="title" @click="jumpHome" :style="{'background-color':bgcList[pifuIndex].bgc.lt}">牛气冲天</div>
           <!-- 一级菜单 -->
           <el-submenu
             :index="item.id+''"
@@ -26,8 +26,8 @@
                 :index="'/'+item2.url"
                 v-for="item2 in item.children"
                 :key="item2.id"
-                :style="{'background-color':item2.id===activeId?bgcList[pifuIndex].bgc.lt:bgcList[pifuIndex].bgc.lb}"
-                @click="erJiMenu(item2.id)">{{item2.value}}
+                :style="{'background-color':item2.url===urlActive?bgcList[pifuIndex].bgc.lt:bgcList[pifuIndex].bgc.lb}"
+                @click="erJiMenu(item2.id,item2.value,item2.url)">{{item2.value}}
               </el-menu-item>
               <!-- <el-menu-item index="1-2">选项2</el-menu-item> -->
             <!-- </el-menu-item-group> -->
@@ -40,8 +40,8 @@
       <!-- 右侧视图 -->
       <el-container>
         <!-- 头部区域 -->
-        <el-header :style="{color:pifuIndex>9?'#fff':'#000','background-color':bgcList[pifuIndex].bgc.rt}">
-          <div class="hearderTop">
+        <el-header>
+          <div class="hearderTop" :style="{color:pifuIndex>9?'#fff':'#000','background-color':bgcList[pifuIndex].bgc.rt}">
             <div class="left">
               <div>
                 <i class="el-icon-s-fold"></i>
@@ -127,6 +127,34 @@
               </el-drawer>
             </div>
           </div>
+          <div class="hearderB">
+            <i class="el-icon-d-arrow-left" @click="leftIcon"></i>
+            <i class="el-icon-s-home" :class="indexTag===-1?'tagActive':''"></i>
+            <div :class="tagRight===true?'tagRight':''" ref="fatherBox">
+              <el-tag
+                ref="childrenBox"
+                :class="index===indexTag?'tagActive':''"
+                :key="item.id"
+                v-for="(item,index) in tagList"
+                closable
+                @close="handleClose(item.id)"
+                @click="tagBtn(item.url)">
+                {{item.value}}
+              </el-tag>
+            </div>
+            <!-- <ul>
+              <li v-for="item in tagList" :key="item.id">{{item.value}}<i class="el-icon-close"></i></li>
+            </ul> -->
+            <i class="el-icon-d-arrow-right" @click="rightIcon"></i>
+            <i class="el-icon-arrow-down"></i>
+            <div class="tagHover">
+              <ul>
+                <li>关闭当前标签页</li>
+                <li>关闭其他标签页</li>
+                <li>关闭全部标签页</li>
+              </ul>
+            </div>
+          </div>
         </el-header>
         <el-main>
           <div class="neibu">
@@ -146,6 +174,11 @@ export default {
   components: { PifuMenu },
   data () {
     return {
+      tagRight: false,
+      // 导航高亮
+      urlActive: 'home/systemconsole',
+      // 标签默认索引
+      indexTag: null,
       activeId: null,
       pifuIndex: window.localStorage.getItem('color') | null,
       borderC: { border: '1px solid green' },
@@ -283,21 +316,130 @@ export default {
             { id: 22, value: '人物管理系统', url: 'system' }
           ]
         }
-
+      ],
+      // 标签页
+      tagList: [
+        // { id: 41, url: 'character/list', value: '人物列表' }
       ]
     }
   },
+  created () {
+    this.$router.push('/home/systemconsole')
+  },
   methods: {
+    // 跳转主页
+    jumpHome () {
+      this.$router.push('/home')
+    },
     // 皮肤点击显示边框
     pifuMenu (value) {
       console.log(value)
       this.pifuIndex = value
       window.localStorage.setItem('color', this.pifuIndex)
     },
-    // 二级菜单点击变色
-    erJiMenu (value) {
-      this.activeId = value
+    // 二级菜单点击
+    erJiMenu (id, value, url) {
+      this.activeId = id
+      this.urlActive = url
+      console.log(id)
       console.log(value)
+      console.log(url)
+      const a = {
+        id,
+        value,
+        url
+      }
+      const index = this.tagList.findIndex(item => {
+        return item.id === a.id
+      })
+      console.log(index)
+      this.indexTag = index
+      // 添加标签
+      if (index === -1 && a.id !== 11) {
+        this.tagList.push(a)
+        this.indexTag = this.tagList.length - 1
+      }
+      console.log(this.tagList)
+    },
+    // 关闭标签
+    handleClose (tag) {
+      const index = this.tagList.findIndex(item => {
+        return item.id === tag
+      })
+      // console.log(tag)
+      // console.log(this.indexTag) // 2
+      // console.log(this.tagList.length) // 3
+      // console.log(this.indexTag === this.tagList.length - 1)
+      const gl = this.indexTag
+      // const index = this.tagList.indexOf(value)
+      const al = this.tagList.length
+      // const rt = this.tagList[gl].url
+      console.log(index)
+      console.log(gl)
+      console.log(al)
+      if (al === 1) {
+        this.$router.push('/home/systemconsole')
+        this.tagList.splice(index, 1)
+        this.urlActive = 'home/systemconsole'
+        return
+      }
+      if (gl === index && index === al - 1) {
+        this.indexTag -= 1
+        this.urlActive = this.tagList[gl - 1].url
+        // console.log(rt1)
+        // this.$router.push('/' + this.urlActive)
+      } else if (gl === index && gl !== al - 1) {
+        this.urlActive = this.tagList[gl + 1].url
+        // this.$router.push('/' + rt2)
+        // console.log(rt2)
+      } else if (gl > index) {
+        this.indexTag -= 1
+        this.urlActive = this.tagList[gl].url
+        // this.$router.push('/' + rt1)
+      } else {
+        this.urlActive = this.tagList[gl].url
+        // this.$router.push('/' + rt1)
+      }
+      this.$router.push('/' + this.urlActive)
+      this.tagList.splice(index, 1)
+      if (this.tagRight) {
+        let b = 0
+        for (let a = 0; a < this.tagList.length; a++) {
+        // console.log(a)
+          b += this.$refs.childrenBox[a].$el.clientWidth
+        }
+        const fatherBoxWidth = this.$refs.fatherBox.offsetWidth
+        if (fatherBoxWidth >= b) {
+          this.tagRight = false
+        }
+      }
+    },
+    // 点击标签切换导航菜单
+    tagBtn (url) {
+      const index = this.tagList.findIndex(item => {
+        return item.url === url
+      })
+      console.log(index)
+      this.indexTag = index
+      console.log(url)
+      this.urlActive = url
+      this.$router.push('/' + url)
+    },
+    // 标签左移图标
+    leftIcon () {
+      this.tagRight = false
+    },
+    // 标签右移图标
+    rightIcon () {
+      let b = 0
+      for (let a = 0; a < this.tagList.length; a++) {
+        // console.log(a)
+        b += this.$refs.childrenBox[a].$el.clientWidth
+      }
+      const fatherBoxWidth = this.$refs.fatherBox.offsetWidth
+      if (fatherBoxWidth < b) {
+        this.tagRight = true
+      }
     }
   }
 }
@@ -307,16 +449,28 @@ export default {
 //    background-color: rgb(231, 235, 240) !important;
 // }
 $top-hight: 50px;
+$border:1px solid #f2f2f2;
 .main{
   .el-menu {
     border-right: none !important;
+    .title{
+      color: rgba(255,255,255,0.8);
+      font-weight:300;
+      font-size: 16px;
+      height: $top-hight;
+      line-height: $top-hight;
+      text-align: center;
+      cursor: pointer;
+    }
   }
   .el-header{
     height: $top-hight !important;
+    padding: 0;
     .hearderTop{
       display: flex;
       justify-content: space-between;
       height: $top-hight;
+      // border-bottom: 1px solid #f2f2f2;
       .left,.right{
         display:flex;
         div{
@@ -329,7 +483,7 @@ $top-hight: 50px;
           border-top: 3px solid #20222A;
           padding-top:9px
         }
-        div:hover ul{
+        div:hover div{
           display: inline-block;
         }
         div:hover .el-icon-caret-bottom{
@@ -356,7 +510,8 @@ $top-hight: 50px;
         color: #000;
         border: 1px solid #ccc;
         box-shadow: 0 0 5px #ccc;
-        display: none;
+        // display: none;
+        background-color: #fff;
       }
       li{
         list-style-type: none;
@@ -380,19 +535,100 @@ $top-hight: 50px;
         position: absolute;
         top: $top-hight;
         right: 180px;
+        z-index: 999;
+        display: none;
       }
       .clearHC{
         position: absolute;
         right:80px;
         top:$top-hight;
         z-index: 999;
+        display: none;
       }
       .admin{
         position: absolute;
         right: 10px;
         top: $top-hight;
         z-index: 999;
+        display: none;
       }
+    }
+    .hearderB{
+      position: relative;
+      // border-top: 1px solid #f6f6f6;
+      // left: 220px;
+      // width: calc(100vw - 220px);
+      // height: 40px;
+      // background-color: chocolate;
+      display: flex;
+      &>i{
+        width: 40px;
+        text-align: center;
+        font-size: 22px;
+        line-height: 40px;
+        border-right: $border;
+        cursor: pointer;
+      }
+      &>div{
+        display: flex;
+        overflow: hidden;
+        width: calc(100% - 160px);
+      }
+      .el-icon-arrow-down{
+        position: absolute;
+        right: 0;
+      }
+      .el-icon-d-arrow-right{
+        position: absolute;
+        right: 40px;
+        border-left: $border;
+      }
+      .tagActive{
+        background-color: #F6F6F6 !important;
+        line-height:36px !important;
+        border-top: 2px solid #344058 !important;
+      }
+      .tagRight{
+        display: flex;
+        justify-content: flex-end;
+      }
+    }
+    .tagHover{
+      top: 40px;
+      width: 120px !important;
+      position: absolute;
+      right: 0;
+      display: none;
+      ul{
+        color: #000;
+        border: 1px solid #ccc;
+        box-shadow: 0 0 5px #ccc;
+        background-color: #fff;
+        list-style: none;
+        li{
+          cursor: pointer;
+          padding: 10px;
+          text-align: center;
+        }
+        li:hover{
+          background-color: #eee;
+        }
+      }
+    }
+    .el-icon-arrow-down:hover + .tagHover{
+      display: inline-block;
+      // top: 110px;
+      // background-color: red;
+      // color: #ccc;
+    }
+  }
+  .el-main{
+    background-color:#F2F2F2;
+    margin-top: 40px;
+    padding: 15px;
+    .neibu{
+      background-color: #fff;
+      height: 100%;
     }
   }
 }
