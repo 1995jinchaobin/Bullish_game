@@ -1,5 +1,5 @@
 <template>
-  <div class="characterMemberList">会员人物列表</div>
+  <div class="characterMemberList">人物列表</div>
 </template>
 
 <script>

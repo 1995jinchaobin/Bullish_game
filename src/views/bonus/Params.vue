@@ -1,5 +1,5 @@
 <template>
-  <div class="systemConsole">系统控制台{{$store.state.power}}</div>
+  <div class="Bparams">奖金参数设置</div>
 </template>
 
 <script>

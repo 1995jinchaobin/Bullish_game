@@ -1,5 +1,5 @@
 <template>
-  <div class="systemConsole">系统控制台{{$store.state.power}}</div>
+  <div class="walletOutLog">钱包体现日志</div>
 </template>
 
 <script>

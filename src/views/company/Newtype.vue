@@ -1,5 +1,5 @@
 <template>
-  <div class="systemConsole">系统控制台{{$store.state.power}}</div>
+  <div class="newType">新闻分类</div>
 </template>
 
 <script>

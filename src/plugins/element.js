@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { Button, Container, Aside, Header, Main, Menu, Submenu, MenuItem, ColorPicker, Drawer, Tag } from 'element-ui'
+import { Button, Container, Aside, Header, Main, Menu, Submenu, MenuItem, ColorPicker, Drawer, Tag, Message } from 'element-ui'
 
 Vue.use(Button)
 Vue.use(Container)
@@ -13,3 +13,4 @@ Vue.use(MenuItem)
 Vue.use(ColorPicker)
 Vue.use(Drawer)
 Vue.use(Tag)
+Vue.prototype.$message = Message

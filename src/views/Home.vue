@@ -17,17 +17,17 @@
             :key="item.id">
             <template slot="title">
               <i class="el-icon-location"></i>
-              <span>{{item.value}}</span>
+              <span>{{item.modulName}}</span>
             </template>
             <!-- 二级菜单 -->
             <!-- <el-menu-item-group> -->
               <!-- <template slot="title">分组一</template> -->
               <el-menu-item
                 :index="'/'+item2.url"
-                v-for="item2 in item.children"
+                v-for="item2 in item.vos"
                 :key="item2.id"
                 :style="{'background-color':item2.url===urlActive?bgcList[pifuIndex].bgc.lt:bgcList[pifuIndex].bgc.lb}"
-                @click="erJiMenu(item2.id,item2.value,item2.url)">{{item2.value}}
+                @click="erJiMenu(item2.id,item2.modulName,item2.url)">{{item2.modulName}}
               </el-menu-item>
               <!-- <el-menu-item index="1-2">选项2</el-menu-item> -->
             <!-- </el-menu-item-group> -->
@@ -129,7 +129,11 @@
           </div>
           <div class="hearderB">
             <i class="el-icon-d-arrow-left" @click="leftIcon"></i>
-            <i class="el-icon-s-home" :class="indexTag===-1?'tagActive':''"></i>
+            <i
+              class="el-icon-s-home"
+              :class="indexTag===-1?'tagActive':''"
+              @click="pushHome">
+            </i>
             <div :class="tagRight===true?'tagRight':''" ref="fatherBox">
               <el-tag
                 ref="childrenBox"
@@ -176,9 +180,9 @@ export default {
     return {
       tagRight: false,
       // 导航高亮
-      urlActive: 'home/systemconsole',
+      urlActive: 'home/controller',
       // 标签默认索引
-      indexTag: null,
+      indexTag: -1,
       activeId: null,
       pifuIndex: window.localStorage.getItem('color') | null,
       borderC: { border: '1px solid green' },
@@ -201,121 +205,121 @@ export default {
       ],
       drawer: false,
       SideBarList: [
-        {
-          id: 1,
-          value: '主页',
-          children: [
-            { id: 11, value: '系统控制台', url: 'home/systemconsole' }
-          ]
-        },
-        {
-          id: 2,
-          value: '会员管理系统',
-          children: [
-            { id: 21, value: '所有会员列表', url: 'member/list' },
-            { id: 22, value: '会员动态日志', url: 'member/log' },
-            { id: 23, value: '会员银行列表', url: 'member/banklist' },
-            { id: 24, value: '留言列表', url: 'member/messagelist' },
-            { id: 25, value: '收款二维码', url: 'member/collectioncode' },
-            { id: 26, value: '直推树状图', url: 'member/tree' },
-            { id: 27, value: '直推网络图', url: 'member/internet' }
-          ]
-        },
-        {
-          id: 3,
-          value: '实名列表管理',
-          children: [
-            { id: 31, value: '实名列表', url: 'realname/list' }
-          ]
-        },
-        {
-          id: 4,
-          value: '人物管理系统',
-          children: [
-            { id: 41, value: '人物列表', url: 'character/list' },
-            { id: 42, value: '会员人物列表', url: 'character/memberlist' },
-            { id: 43, value: '会员购买列表', url: 'character/memberbuylist' }
-          ]
-        },
-        {
-          id: 15,
-          value: '网站参数设置',
-          children: [
-            { id: 51, value: '基本信息管理', url: 'website/baseinfo' },
-            { id: 52, value: '短信参数配置', url: 'website/smsparams' },
-            { id: 53, value: '安全参数配置', url: 'website/safeparams' },
-            { id: 54, value: '登录参数配置', url: 'website/loginparams' },
-            { id: 55, value: '注册参数配置', url: 'website/registerparams' },
-            { id: 56, value: '支付参数配置', url: 'website/payparams' },
-            { id: 57, value: '广告信息管理', url: 'website/adinfo' },
-            { id: 58, value: '阶段收入参数', url: 'website/incomeparams' },
-            { id: 59, value: '海报信息管理', url: 'website/posterinfo' }
-          ]
-        },
-        {
-          id: 14,
-          value: '会员等级管理',
-          children: [
-            { id: 41, value: '实名列表管理', url: 'system' },
-            { id: 42, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 5,
-          value: '奖金管理系统',
-          children: [
-            { id: 51, value: '实名列表管理', url: 'system' },
-            { id: 52, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 6,
-          value: '企业信息管理',
-          children: [
-            { id: 61, value: '实名列表管理', url: 'system' },
-            { id: 62, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 7,
-          value: '用户资产管理',
-          children: [
-            { id: 71, value: '实名列表管理', url: 'system' },
-            { id: 72, value: '人物管理系统' }
-          ]
-        },
-        {
-          id: 8,
-          value: '转盘抽奖系统',
-          children: [
-            { id: 21, value: '实名列表管理', url: 'system' },
-            { id: 22, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 9,
-          value: '游戏资料管理',
-          children: [
-            { id: 21, value: '实名列表管理', url: 'system' },
-            { id: 22, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 10,
-          value: '广告综合管理',
-          children: [
-            { id: 21, value: '实名列表管理', url: 'system' },
-            { id: 22, value: '人物管理系统', url: 'system' }
-          ]
-        },
-        {
-          id: 11,
-          value: '系统权限管理',
-          children: [
-            { id: 21, value: '实名列表管理', url: 'system' },
-            { id: 22, value: '人物管理系统', url: 'system' }
-          ]
-        }
+        // {
+        //   id: 1,
+        //   value: '主页',
+        //   children: [
+        //     { id: 11, value: '系统控制台', url: 'home/systemconsole' }
+        //   ]
+        // },
+        // {
+        //   id: 2,
+        //   value: '会员管理系统',
+        //   children: [
+        //     { id: 21, value: '所有会员列表', url: 'member/list' },
+        //     { id: 22, value: '会员动态日志', url: 'member/log' },
+        //     { id: 23, value: '会员银行列表', url: 'member/banklist' },
+        //     { id: 24, value: '留言列表', url: 'member/messagelist' },
+        //     { id: 25, value: '收款二维码', url: 'member/collectioncode' },
+        //     { id: 26, value: '直推树状图', url: 'member/tree' },
+        //     { id: 27, value: '直推网络图', url: 'member/internet' }
+        //   ]
+        // },
+        // {
+        //   id: 3,
+        //   value: '实名列表管理',
+        //   children: [
+        //     { id: 31, value: '实名列表', url: 'realname/list' }
+        //   ]
+        // },
+        // {
+        //   id: 4,
+        //   value: '人物管理系统',
+        //   children: [
+        //     { id: 41, value: '人物列表', url: 'character/list' },
+        //     { id: 42, value: '会员人物列表', url: 'character/memberlist' },
+        //     { id: 43, value: '会员购买列表', url: 'character/memberbuylist' }
+        //   ]
+        // },
+        // {
+        //   id: 15,
+        //   value: '网站参数设置',
+        //   children: [
+        //     { id: 51, value: '基本信息管理', url: 'website/baseinfo' },
+        //     { id: 52, value: '短信参数配置', url: 'website/smsparams' },
+        //     { id: 53, value: '安全参数配置', url: 'website/safeparams' },
+        //     { id: 54, value: '登录参数配置', url: 'website/loginparams' },
+        //     { id: 55, value: '注册参数配置', url: 'website/registerparams' },
+        //     { id: 56, value: '支付参数配置', url: 'website/payparams' },
+        //     { id: 57, value: '广告信息管理', url: 'website/adinfo' },
+        //     { id: 58, value: '阶段收入参数', url: 'website/incomeparams' },
+        //     { id: 59, value: '海报信息管理', url: 'website/posterinfo' }
+        //   ]
+        // },
+        // {
+        //   id: 14,
+        //   value: '会员等级管理',
+        //   children: [
+        //     { id: 41, value: '实名列表管理', url: 'system' },
+        //     { id: 42, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 5,
+        //   value: '奖金管理系统',
+        //   children: [
+        //     { id: 51, value: '实名列表管理', url: 'system' },
+        //     { id: 52, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 6,
+        //   value: '企业信息管理',
+        //   children: [
+        //     { id: 61, value: '实名列表管理', url: 'system' },
+        //     { id: 62, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 7,
+        //   value: '用户资产管理',
+        //   children: [
+        //     { id: 71, value: '实名列表管理', url: 'system' },
+        //     { id: 72, value: '人物管理系统' }
+        //   ]
+        // },
+        // {
+        //   id: 8,
+        //   value: '转盘抽奖系统',
+        //   children: [
+        //     { id: 21, value: '实名列表管理', url: 'system' },
+        //     { id: 22, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 9,
+        //   value: '游戏资料管理',
+        //   children: [
+        //     { id: 21, value: '实名列表管理', url: 'system' },
+        //     { id: 22, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 10,
+        //   value: '广告综合管理',
+        //   children: [
+        //     { id: 21, value: '实名列表管理', url: 'system' },
+        //     { id: 22, value: '人物管理系统', url: 'system' }
+        //   ]
+        // },
+        // {
+        //   id: 11,
+        //   value: '系统权限管理',
+        //   children: [
+        //     { id: 21, value: '实名列表管理', url: 'system' },
+        //     { id: 22, value: '人物管理系统', url: 'system' }
+        //   ]
+        // }
       ],
       // 标签页
       tagList: [
@@ -324,7 +328,26 @@ export default {
     }
   },
   created () {
-    this.$router.push('/home/systemconsole')
+    if (this.$store.state.power.length === 0 && window.sessionStorage.getItem('userInfo')) {
+      const obj = window.sessionStorage.getItem('userInfo')
+      // console.log(obj)
+      // JSON.parse(obj)
+      this.$store.dispatch('login', JSON.parse(obj))
+      this.SideBarList = this.$store.state.power
+      console.log(this.SideBarList)
+    } else if (this.$store.state.power.length === 0 && !window.sessionStorage.getItem('userInfo')) {
+      this.$router.push('/login')
+    } else {
+      this.SideBarList = this.$store.state.power
+    }
+    // this.SideBarList = this.$store.state.power
+  },
+  watch: {
+    '$store.state.power': function () {
+      console.log(this.SideBarList)
+      console.log(this.$store.state.power)
+      this.SideBarList = this.$store.state.power
+    }
   },
   methods: {
     // 跳转主页
@@ -378,9 +401,9 @@ export default {
       console.log(gl)
       console.log(al)
       if (al === 1) {
-        this.$router.push('/home/systemconsole')
+        this.$router.push('/home/controller')
         this.tagList.splice(index, 1)
-        this.urlActive = 'home/systemconsole'
+        this.urlActive = 'home/controller'
         return
       }
       if (gl === index && index === al - 1) {
@@ -440,6 +463,12 @@ export default {
       if (fatherBoxWidth < b) {
         this.tagRight = true
       }
+    },
+    // 点击图标跳转首页
+    pushHome () {
+      this.indexTag = -1
+      this.urlActive = 'home/controller'
+      this.$router.push('/home/controller')
     }
   }
 }
@@ -598,13 +627,14 @@ $border:1px solid #f2f2f2;
       width: 120px !important;
       position: absolute;
       right: 0;
-      display: none;
+      // display: none;
       ul{
         color: #000;
         border: 1px solid #ccc;
         box-shadow: 0 0 5px #ccc;
         background-color: #fff;
         list-style: none;
+        display: none;
         li{
           cursor: pointer;
           padding: 10px;
@@ -615,11 +645,11 @@ $border:1px solid #f2f2f2;
         }
       }
     }
-    .el-icon-arrow-down:hover + .tagHover{
+    .el-icon-arrow-down:hover + .tagHover ul{
       display: inline-block;
-      // top: 110px;
-      // background-color: red;
-      // color: #ccc;
+    }
+    .tagHover:hover ul{
+      display: inline-block;
     }
   }
   .el-main{

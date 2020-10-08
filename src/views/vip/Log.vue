@@ -1,5 +1,5 @@
 <template>
-  <div class="systemConsole">系统控制台{{$store.state.power}}</div>
+  <div class="Vlog">会员等级日志</div>
 </template>
 
 <script>
